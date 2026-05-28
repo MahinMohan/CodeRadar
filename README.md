@@ -157,7 +157,3 @@ Set `LITE_MODE=false` in `api/.env`, install Python deps (`pip install -r requir
 | `GET` | `/api/health` | Health check |
 
 ---
-
-## License
-
-MIT
