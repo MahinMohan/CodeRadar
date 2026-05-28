@@ -1,0 +1,82 @@
+<section class="results">
+  <h2 class="results-heading">
+    {{ results.length }} repositories found
+    <span class="results-sub">ranked by composite score</span>
+  </h2>
+
+  <div class="cards">
+    <article class="card" *ngFor="let r of results; let i = index">
+      <div class="card-header">
+        <div class="rank">{{ i + 1 }}</div>
+        <div class="card-title-wrap">
+          <a [href]="r.repo_url" target="_blank" rel="noopener" class="repo-name">
+            {{ r.repo_full_name }}
+          </a>
+          <span class="lang-badge" [style.background]="languageColor(r.language)">
+            {{ r.language || 'Unknown' }}
+          </span>
+          <span class="stars">&#9733; {{ r.stars | number }}</span>
+        </div>
+        <div class="composite-score" [ngClass]="scoreClass(r.composite_score)">
+          {{ pct(r.composite_score) }}
+        </div>
+      </div>
+
+      <p class="description">{{ truncate(r.description) || 'No description provided.' }}</p>
+
+      <div class="scores">
+        <div class="score-row">
+          <span class="score-label">Relevance</span>
+          <div class="bar-track">
+            <div class="bar-fill relevance" [style.width]="pct(r.relevance_score)"></div>
+          </div>
+          <span class="score-val">{{ pct(r.relevance_score) }}</span>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Quality</span>
+          <div class="bar-track">
+            <div class="bar-fill quality" [style.width]="pct(r.quality_score)"></div>
+          </div>
+          <span class="score-val">{{ pct(r.quality_score) }}</span>
+        </div>
+        <div class="score-row">
+          <span class="score-label">Health</span>
+          <div class="bar-track">
+            <div class="bar-fill health" [style.width]="pct(r.health_score)"></div>
+          </div>
+          <span class="score-val">{{ pct(r.health_score) }}</span>
+        </div>
+      </div>
+
+      <details class="breakdown" *ngIf="r.score_breakdown">
+        <summary>Score breakdown</summary>
+        <dl class="breakdown-grid">
+          <ng-container *ngIf="r.score_breakdown.test_file_ratio != null">
+            <dt>Test coverage ratio</dt>
+            <dd>{{ (r.score_breakdown.test_file_ratio! * 100).toFixed(1) }}%</dd>
+          </ng-container>
+          <ng-container *ngIf="r.score_breakdown.error_handling_density != null">
+            <dt>Error handling density</dt>
+            <dd>{{ (r.score_breakdown.error_handling_density! * 100).toFixed(2) }}%</dd>
+          </ng-container>
+          <ng-container *ngIf="r.score_breakdown.public_api_count != null">
+            <dt>Public API functions</dt>
+            <dd>{{ r.score_breakdown.public_api_count }}</dd>
+          </ng-container>
+          <ng-container *ngIf="r.score_breakdown.contributor_count != null">
+            <dt>Contributors</dt>
+            <dd>{{ r.score_breakdown.contributor_count }}</dd>
+          </ng-container>
+          <ng-container *ngIf="r.score_breakdown.commit_recency_days != null">
+            <dt>Last commit</dt>
+            <dd>{{ r.score_breakdown.commit_recency_days }} days ago</dd>
+          </ng-container>
+          <ng-container *ngIf="r.score_breakdown.issue_close_rate != null">
+            <dt>Issue close rate</dt>
+            <dd>{{ (r.score_breakdown.issue_close_rate! * 100).toFixed(0) }}%</dd>
+          </ng-container>
+        </dl>
+      </details>
+    </article>
+  </div>
+</section>

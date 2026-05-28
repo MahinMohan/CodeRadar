@@ -1,0 +1,12 @@
+# Embeddings microservice
+fastapi==0.111.0
+uvicorn[standard]==0.29.0
+sentence-transformers==2.7.0
+numpy==1.26.4
+scipy==1.13.0
+
+# Spark pipeline
+pyspark==3.5.1
+psycopg2-binary==2.9.9
+
+# MapReduce jobs (run via Hadoop Streaming — no extra deps beyond stdlib)

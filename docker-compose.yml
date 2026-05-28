@@ -1,0 +1,80 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: coderadar
+      POSTGRES_PASSWORD: coderadar
+      POSTGRES_DB: coderadar
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init.sql
+
+  namenode:
+    image: apache/hadoop:3.3.6
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    environment:
+      HADOOP_HOME: /opt/hadoop
+    env_file: ./hadoop/hadoop.env
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    volumes:
+      - namenode_data:/opt/hadoop/data/nameNode
+
+  datanode:
+    image: apache/hadoop:3.3.6
+    command: ["hdfs", "datanode"]
+    env_file: ./hadoop/hadoop.env
+    depends_on:
+      - namenode
+    volumes:
+      - datanode_data:/opt/hadoop/data/dataNode
+
+  spark-master:
+    image: bitnami/spark:3.5
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+
+  spark-worker:
+    image: bitnami/spark:3.5
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    depends_on:
+      - spark-master
+
+  embeddings:
+    build: ./embeddings
+    ports:
+      - "8001:8001"
+    environment:
+      - MODEL_NAME=all-MiniLM-L6-v2
+
+  api:
+    build: ./api
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://coderadar:coderadar@postgres:5432/coderadar
+      - EMBEDDINGS_URL=http://embeddings:8001
+      - CRAWLER_BIN=/app/crawler
+      - HDFS_URL=http://namenode:9870
+      - NODE_ENV=development
+    depends_on:
+      - postgres
+      - embeddings
+    volumes:
+      - ./crawler/bin/crawler:/app/crawler
+
+volumes:
+  postgres_data:
+  namenode_data:
+  datanode_data:

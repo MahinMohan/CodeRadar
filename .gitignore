@@ -1,0 +1,41 @@
+# Environment
+.env
+.env.local
+api/.env
+api/.env.local
+
+# Node
+node_modules/
+dist/
+.angular/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# Go
+crawler/bin/
+*.exe
+
+# Hadoop / Spark
+*.parquet
+spark-warehouse/
+derby.log
+metastore_db/
+
+# Cloned repos (crawler temp)
+/tmp/coderadar_repos/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+*.swp

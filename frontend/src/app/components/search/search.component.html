@@ -1,0 +1,27 @@
+<div class="search-wrap">
+  <form class="search-form" (ngSubmit)="submit()">
+    <div class="input-row">
+      <input
+        type="text"
+        class="search-input"
+        [(ngModel)]="query"
+        name="query"
+        placeholder="Describe what you need… e.g. Python PDF parser with table support"
+        autocomplete="off"
+        autofocus
+      />
+      <button type="submit" class="search-btn" [disabled]="!query.trim()">
+        Search
+      </button>
+    </div>
+  </form>
+
+  <div class="examples">
+    <span class="examples-label">Try:</span>
+    <button
+      *ngFor="let ex of examples"
+      class="example-chip"
+      (click)="useExample(ex)"
+    >{{ ex }}</button>
+  </div>
+</div>

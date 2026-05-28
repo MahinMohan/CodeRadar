@@ -1,0 +1,34 @@
+<div class="app-shell">
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="logo">
+        <span class="logo-icon">&#9685;</span>
+        <span class="logo-text">CodeRadar</span>
+      </div>
+      <p class="tagline">Distributed repository discovery — ranked by relevance, quality &amp; health</p>
+    </div>
+  </header>
+
+  <main class="main">
+    <app-search
+      (searchStarted)="onSearchStarted()"
+      (results)="onResults($event)"
+      (searchError)="onError($event)"
+    />
+
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Crawling GitHub · Running AST analysis · Scoring with Spark…</p>
+    </div>
+
+    <div class="error-state" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <app-results *ngIf="results.length" [results]="results" />
+  </main>
+
+  <footer class="footer">
+    <span>Built with Angular · Node.js · Go · Hadoop · Spark · PostgreSQL</span>
+  </footer>
+</div>
